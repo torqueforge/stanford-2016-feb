@@ -9,13 +9,23 @@ class Bottles
   end
 
   def verse(number)
-    bottle_number      = BottleNumber.new(number)
-    next_bottle_number = BottleNumber.new(bottle_number.successor)
-
-    "#{bottle_number} of beer on the wall, ".capitalize +
-    "#{bottle_number} of beer.\n" +
+    bottle_number      = bottle_number_for(number)
+    next_bottle_number = bottle_number_for(bottle_number.successor)
+    "#{bottle_number.amount.capitalize} #{bottle_number.container} of beer on the wall, " +
+    "#{bottle_number.amount} #{bottle_number.container} of beer.\n" +
     "#{bottle_number.action}, " +
-    "#{next_bottle_number} of beer on the wall.\n"
+    "#{next_bottle_number.amount} #{next_bottle_number.container} of beer on the wall.\n"
+  end
+
+  def bottle_number_for(number)
+    case number
+    when 0
+      BottleNumber0.new(number)
+    when 1
+      BottleNumber1.new(number)
+    else
+      BottleNumber.new(number)
+    end
   end
 end
 
@@ -26,47 +36,47 @@ class BottleNumber
     @number = number
   end
 
-  def to_s
-    "#{amount} #{container}"
-  end
-
   def container
-    if number == 1
-      "bottle"
-    else
-      "bottles"
-    end
+    "bottles"
   end
 
   def pronoun
-    if number == 1
-      "it"
-    else
-      "one"
-    end
+    "one"
   end
 
   def amount
-    if number == 0
-      "no more"
-    else
-      number.to_s
-    end
+    number.to_s
   end
 
   def action
-    if number == 0
-      "Go to the store and buy some more"
-    else
-      "Take #{pronoun} down and pass it around"
-    end
+    "Take #{pronoun} down and pass it around"
   end
 
   def successor
-    if number == 0
-      99
-    else
-      number - 1
-    end
+    number - 1
+  end
+end
+
+class BottleNumber0 < BottleNumber
+  def amount
+    "no more"
+  end
+
+  def action
+    "Go to the store and buy some more"
+  end
+
+  def successor
+    99
+  end
+end
+
+class BottleNumber1 < BottleNumber
+  def container
+    "bottle"
+  end
+
+  def pronoun
+    "it"
   end
 end
